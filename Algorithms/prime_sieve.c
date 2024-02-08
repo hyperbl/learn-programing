@@ -11,21 +11,26 @@ void sundaram_sieve(int num, int arr[]);
 // 欧拉筛法
 void euler_sieve(int num, int arr[]);
 
+// 分段筛法
+void segmented_sieve(int num, int arr[]);
+
 int main()
 {
     int num;
     puts("Enter an integer:");
     scanf("%d", &num);
     int * array = (int *) malloc(sizeof (int) * num);
-    for (int i = 0; i < num; i++)
+    array[0] = 0;
+    for (int i = 1; i < num; i++)
         array[i] = 1;
     printf("prime numbers between 1 and %d are listed as follows:\n", num);
     // eratosthenes_sieve(num, array);
     // sundaram_sieve(num, array);
-    euler_sieve(num, array);
-    for (int i = 2; i <= num; i++)
-        if (array[i - 1])
-            printf("%d\n", i);
+    // euler_sieve(num, array);
+    segmented_sieve(num, array);
+    for (int i = 0; i < num; i++)
+        if (array[i])
+            printf("%d\n", i + 1);
     free(array);
     return 0;
 }
@@ -63,4 +68,23 @@ void euler_sieve(int num, int arr[])
                 if (i % j == 0)
                     break;
             }
+}
+
+void segmented_sieve(int num, int arr[])
+{
+    int seg = 1, i, j, k;
+    while (seg * seg <= num)
+        seg++;
+    seg--;
+    eratosthenes_sieve(seg, arr);
+    for (i = seg + 1; i <= num; i += seg)
+        for (j = i; j < i + seg && j <= num; j++)
+            for (k = 1; k < i; k++)
+                if (arr[k - 1] && j % k == 0)
+                    arr[j - 1] = 0;
+    i -= seg;
+    for (j = i; j <= num; j++)
+        for (k = 1; k < i; k++)
+            if (arr[k - 1] && j % k == 0)
+                arr[j - 1] = 0;
 }
