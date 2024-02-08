@@ -8,6 +8,9 @@ void eratosthenes_sieve(int num, int arr[]);
 // 辛达拉姆筛法
 void sundaram_sieve(int num, int arr[]);
 
+// 欧拉筛法
+void euler_sieve(int num, int arr[]);
+
 int main()
 {
     int num;
@@ -18,7 +21,8 @@ int main()
         array[i] = 1;
     printf("prime numbers between 1 and %d are listed as follows:\n", num);
     // eratosthenes_sieve(num, array);
-    sundaram_sieve(num, array);
+    // sundaram_sieve(num, array);
+    euler_sieve(num, array);
     for (int i = 2; i <= num; i++)
         if (array[i - 1])
             printf("%d\n", i);
@@ -43,4 +47,20 @@ void sundaram_sieve(int num, int arr[])
     for (i = 1; (2 * i + 1) * (2 * i + 1) <= num; i++)  // 除去奇合数
         for (j = (2 * i + 1) * (2 * i + 1); j <= num; j += 2 * i + 1)
                 arr[j - 1] = 0;
+}
+
+void euler_sieve(int num, int arr[])
+{
+    int i, j;
+    for (i = 2; i <= num; i++)
+        for (j = 2; j <= i; j++)
+            if (arr[j - 1])
+            {
+                if (i * j > num)
+                    break;
+                else
+                    arr[i * j - 1] = 0;
+                if (i % j == 0)
+                    break;
+            }
 }
