@@ -14,6 +14,9 @@ void euler_sieve(int num, int arr[]);
 // 分段筛法
 void segmented_sieve(int num, int arr[]);
 
+// 增量筛法
+void incremental_sieve(int num, int arr[]);
+
 int main()
 {
     int num;
@@ -27,7 +30,8 @@ int main()
     // eratosthenes_sieve(num, array);
     // sundaram_sieve(num, array);
     // euler_sieve(num, array);
-    segmented_sieve(num, array);
+    // segmented_sieve(num, array);
+    incremental_sieve(num, array);
     for (int i = 0; i < num; i++)
         if (array[i])
             printf("%d\n", i + 1);
@@ -87,4 +91,14 @@ void segmented_sieve(int num, int arr[])
         for (k = 1; k < i; k++)
             if (arr[k - 1] && j % k == 0)
                 arr[j - 1] = 0;
+}
+
+void incremental_sieve(int num, int arr[])
+{
+    int i, j, k;
+    for (i = 2; i <= num; i++)
+        for (j = 2; j * j <= i; j++)
+            if (i % j == 0)
+                for (k = i; k <= num; k += j)
+                    arr[k - 1] = 0;
 }
