@@ -66,7 +66,7 @@ void Pop(Stack S)
         fprintf(stderr, "Empty stack\n");
     else
     {
-        FiristCell = S->Next;
+        FirstCell = S->Next;
         S = FirstCell->Next;
         free(FirstCell);
     }
