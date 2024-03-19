@@ -17,6 +17,17 @@ Stack CreateStack()
     return S;
 }
 
+void DisposeStack(Stack S)
+{
+    PtrToNode save = S;
+    while (S)
+    {
+        save = S;
+        S = S->Next;
+        free(save);
+    }
+}
+
 void MakeEmpty(Stack S)
 {
     if (S)
