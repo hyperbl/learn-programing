@@ -1,6 +1,7 @@
 #ifndef STACK_L_H
 #define STACK_L_H
 
+typedef int ElementType;
 struct node;
 typedef struct node * PtrToNode;
 typedef PtrToNode Stack;
