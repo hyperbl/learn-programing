@@ -1,64 +1,93 @@
 /*KMP_algorithm.c -- KMP算法示例*/
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #define SIZE 25 // 界定最大字符串长度
-
-int next[SIZE];
 
 // KMP() 利用模式串pat的next函数求pat在主串src中pos位置之后
 // 的位置的KMP算法。
-int KMP(char src[], char pat[], int pos);
+int KMP(char src[], char pat[]);
 
-//求模式串pat的next数组并存入数组next
-void get_next(char pat[], int next[]);
+//求模式串pat的next数组
+int * get_next(char pat[]);
 
-void str_get(char str[]);
+char * s_gets(char * st, int n);
 
 
 int main()
 {
     char src[SIZE] = {'\0'}, pat[SIZE] = {'\0'};
-    str_get(src);
-    str_get(pat);
-    printf("%d\n",KMP(src, pat, 0));
+    printf("source string: ");
+    s_gets(src, SIZE);
+    printf("pattern string: ");
+    s_gets(pat, SIZE);
+    int loc = KMP(src, pat);
+    if (loc + 1)
+        printf("First Found at Index %d\n", loc);
+    else
+        puts("Not Found");
     return 0;
 }
 
-int KMP(char src[], char pat[], int pos)
+int KMP(char src[], char pat[])
 {
-    int i = pos, j = 1;
-    get_next(pat, next);
-    while (i <= src[0] && j <= pat[0])
-        if (!j || src[i] == pat[j])
+    int * next = get_next(pat);
+    int len_src = strlen(src);
+    int len_pat = strlen(pat);
+    int i = 0, j = 0;
+    while (i < len_src && j < len_pat)
+    {
+        if (j == -1 || src[i] == pat[j])
         {
             i++;
             j++;
         }
         else
             j = next[j];
-    if (j > pat[0]) return i - pat[0];
-    else return 0;
+    }
+    if (j == len_pat)
+        return i - j;
+    else
+        return -1;
 }
 
-void get_next(char pat[], int next[])
+int * get_next(char pat[])
 {
-    int i = 1, j = 0;
-    next[1] = 0;
-    while (i < pat[0])
-        if (!j || pat[i] == pat[j])
+    int i = 0, j = -1, len = strlen(pat);
+    int * next = (int *) malloc(len * sizeof (int));
+    if (len)
+        next[i] = j;
+    else;
+    while (i < len)
+    {
+        if (j == -1 || pat[i] == pat[j])
         {
             i++; j++;
-            next[i] = j;
+            if (pat[i] != pat[j])
+            {
+                next[i] = j;
+            }
+            else
+                next[i] = next[j];
         }
         else
             j = next[j];
+    }
+    return next;
 }
 
-void str_get(char str[])
+char * s_gets(char * st, int n)
 {
-    int i;
-    scanf("%s", str + 1);
-    while (getchar() != '\n');
-    for (i = 1; str[i]; i++);
-    str[0] = i;
+    char * ret_val;
+    ret_val = fgets(st, n, stdin);
+    if (ret_val)
+    {
+        char * find = strchr(ret_val, '\n');
+        if (find)
+            *find = '\0';
+        else
+            while (getchar() != '\n');
+    }
+    else;
+    return ret_val;
 }
