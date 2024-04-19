@@ -4,19 +4,22 @@
 #include <string.h>
 #define SIZE 25 // 界定最大字符串长度
 
-// KMP() 利用模式串pat的next函数求pat在主串src中pos位置之后
+// KMP() 利用模式串pat的next函数求pat在主串src
 // 的位置的KMP算法。
 int KMP(char src[], char pat[]);
 
 //求模式串pat的next数组
 int * get_next(char pat[]);
 
+// 获取字符串输入
 char * s_gets(char * st, int n);
 
 
 int main()
 {
-    char src[SIZE] = {'\0'}, pat[SIZE] = {'\0'};
+    char *src, *pat;
+    src = (char *) malloc(SIZE * sizeof (char));
+    pat = (char *) malloc(SIZE * sizeof (char));
     printf("source string: ");
     s_gets(src, SIZE);
     printf("pattern string: ");
@@ -26,6 +29,8 @@ int main()
         printf("First Found at Index %d\n", loc);
     else
         puts("Not Found");
+    free(src);
+    free(pat);
     return 0;
 }
 
@@ -45,6 +50,7 @@ int KMP(char src[], char pat[])
         else
             j = next[j];
     }
+    free(next);
     if (j == len_pat)
         return i - j;
     else
@@ -78,7 +84,7 @@ int * get_next(char pat[])
 
 char * s_gets(char * st, int n)
 {
-    char * ret_val;
+    char * ret_val = NULL;
     ret_val = fgets(st, n, stdin);
     if (ret_val)
     {
