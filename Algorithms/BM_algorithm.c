@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define SIZE 25
+#define SIZE 10000
 
 // BM函数,如果pat是src的子串，则返回pat的首元在src串中的首位置
 int BM(char * src, char * pat);
@@ -41,24 +41,29 @@ int BM(char * src, char * pat)
     int len_pat = strlen(pat);
     int * bC = bad_Char(pat);
     int * gS = good_Suffix(pat);
-    int i = len_pat - 1, j = 0, k = 0;
-    while (i < len_src && j < len_pat)
+    int i = 0, j;
+    int movebC, movegS;
+    while (i < len_src)
     {
-        for (j = len_pat - 1, k = 0; j >= k && src[i - k] == pat[j - k]; k++);
-        if (j < k)
-            return i - len_pat + 1;
+        for (j = len_pat - 1; j >= 0 && src[i + j] == pat[j]; j--);
+        if (j < 0)
+        {
+            free(bC);
+            free(gS);
+            return i;
+        }
         else
         {
-            int movebC = j - k - bC[src[i - k]];
-            int movegS = 0;
-            if (k)
-                movegS = j - k + 1 - gS[j - k + 1];
-            else;
-            int move = (movebC < movegS) ? movegS : movebC;
-            i += move;
-            // i += movebC;
+            movebC = j - bC[(int)src[i + j]];
+            if (j != len_pat - 1)
+                movegS = j + 1 - gS[j + 1];
+            else
+                movegS = 0;
+            i += (movebC < movegS) ? movegS : movebC;
         }
     }
+    free(bC);
+    free(gS);
     return -1;
 }
 
@@ -69,24 +74,78 @@ int * bad_Char(char * pat)
     for (int i = 0; i < 128; i++)
         bC[i] = -1;
     for (int i = 0; i < len; i++)
-        bC[pat[i]] = i;
+        bC[(int)pat[i]] = i;
     return bC;
+}
+
+// 这是好后缀算法的辅助函数，用以生成suffix数组和prefix数组。
+// suffix数组表示模式串中以某一位置为起始坐标的后缀子串在模式中可匹配的另一个子串的起始下标
+// prefix数组表示模式串某一位置为起始坐标的后缀子串在模式中是否有可匹配的前缀子串
+void get_suffix_and_prefix(char * pat, int * suffix, int * prefix)
+{
+    int len = strlen(pat);
+    // suffix = (int *) malloc(len * sizeof (int));
+    // prefix = (int *) malloc(len * sizeof (int));
+    int i = len - 1, j, k = 0, count_pre = 0;
+    for (j = 0; j < len; j++) suffix[j] = -1;
+    while (i + 1)
+    {
+        for (k = i, j = i - 1; j >= 0; j--)
+        {
+            if (pat[i] == pat[j])
+            {
+                suffix[k] = j;
+                if (j);
+                else
+                {
+                    count_pre = 1;
+                    while (k + count_pre + 1 < len && (suffix[k + count_pre + 1] 
+                        == suffix[k + count_pre] + 1))
+                        count_pre++;
+                }
+                k = j;
+            }
+            else
+            {
+                if (j + 1 < len && i < len 
+                   && pat[j + 1] == pat[i]
+                   && suffix[j + 1] + 1)
+                    j = suffix[j + 1] + 1;
+                else;
+            }
+        }
+        i--;
+    }
+    if (count_pre)
+    {
+        for (i = 0; i < len - count_pre; i++)
+            prefix[i] = 1;
+        for (i = i; i < len; i++)
+            prefix[i] = 0;
+    }
+    else
+        for (i = 0; i < len; i++)
+            prefix[i] = 0;
+    return;
 }
 
 int * good_Suffix(char * pat)
 {
     int len = strlen(pat);
     int * gS = (int *) malloc(len * sizeof (int));
-    int i, j;
+    int * suffix = (int *) malloc(len * sizeof (int));
+    int * prefix = (int *) malloc(len * sizeof (int));
+    get_suffix_and_prefix(pat, suffix, prefix);
+    int i;
     for (i = 0; i < len; i++)
-        gS[i] = -1;
-    for (i = len - 2; i >= 0; i--)
-    {  
-        for (j = i; j >= 0 && pat[j] == pat[len - 1 - i + j]; j--)
-            if (pat[len - 1 + i - j] + 1)
-                gS[len - 1 + i - j] = j;
-            else; 
+    {
+        gS[i] = suffix[i];
+        if (!(gS[i] + 1) && prefix[i])
+            gS[i] = 0;
+        else;
     }
+    free(suffix);
+    free(prefix);
     return gS;
 }
 
