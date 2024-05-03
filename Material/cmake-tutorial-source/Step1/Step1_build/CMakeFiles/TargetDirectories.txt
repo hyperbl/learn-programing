@@ -1,3 +1,0 @@
-/home/tom/project/cmake-tutorial-source/Step1/Step1_build/CMakeFiles/Tutorial.dir
-/home/tom/project/cmake-tutorial-source/Step1/Step1_build/CMakeFiles/edit_cache.dir
-/home/tom/project/cmake-tutorial-source/Step1/Step1_build/CMakeFiles/rebuild_cache.dir
