@@ -4,12 +4,20 @@
 
 int main()
 {
-    Integer A;
+    Integer A, B, C;
     Integer_Init(&A);
-    Get(&A);
+    Integer_Init(&B);
+    Integer_Init(&C);
     printf("Number A is: ");
-    Print(&A);
-    puts("");
+    Get(&A);
+    printf("Number B is: ");
+    Get(&B);
+    printf("A + B = ");
+    Add(&A, &B, &C);
+    Print(&C);puts("");
+    Integer_Del(&A);
+    Integer_Del(&B);
+    Integer_Del(&C);
     system("pause");
     return 0;
 }

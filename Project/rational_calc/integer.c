@@ -2,6 +2,32 @@
 #include "integer.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <memory.h>
+
+// 整数的加法  C = A + B
+void IntAdd(Integer * p_A, Integer * p_B, Integer * p_C);    
+
+// 整数的减法  C = A - B
+void IntSub(Integer * p_A, Integer * p_B, Integer * p_C);  
+
+// 整数的乘法  C = A * B  
+void IntMul(Integer * p_A, Integer * p_B, Integer * p_C);    
+
+// 整数的除法  C = A / B
+void IntDiv(Integer * p_A, Integer * p_B, Integer * p_C);
+
+// 整数的绝对值  C = |A|
+void IntAbs(Integer * p_A, Integer * p_C);  
+
+// 整数的相反数  C = -A
+void IntOps(Integer * p_A, Integer * p_C);  
+
+// 从输入中获取整数
+void GetInt(Integer * p_A);    
+
+// 输出整数
+void PrintInt(Integer * p_A);    
+
 
 // 虚函数调用
 static void IntAdd_(void * p_A, void * p_B, void * p_C)
@@ -67,7 +93,20 @@ static void raise(char kind, char * msg)
 
 void IntAdd(Integer * p_A, Integer * p_B, Integer * p_C)
 {
-    ;
+    Integer tmp; Integer_Init(&tmp);  // 用于存储临时结果
+    if (p_A->sign == ZERO || p_B->sign == ZERO)       // 如果存在零元，自然不用算了
+    {
+        if (p_A->sign != ZERO)
+            tmp = *p_A;
+        else
+            tmp = *p_B;
+    }
+    else;
+    if (p_C->val)       // 把运算最终结果存入C中
+        free(p_C->val);
+    else;
+    p_C->val = (unsigned char *) malloc(sizeof (unsigned char) * (tmp.size + 1));
+    memcpy(p_C, &tmp, sizeof (tmp));
 }
 
 void IntSub(Integer * p_A, Integer * p_B, Integer * p_C)
@@ -147,15 +186,29 @@ void PrintInt(Integer * p_A)
 
 void Integer_Init(Integer * p_A)
 {
-    p_A->sign = ZERO;
-    p_A->size = 0;
-    p_A->val = NULL;
-    p_A->inherit = &vir;
+    if (p_A)
+    {
+        p_A->sign = ZERO;
+        p_A->size = 0;
+        p_A->val = NULL;
+        p_A->inherit = &vir;
+    }
+    else
+    {
+        raise(ERROR, "Initialization Failed");
+    }
 }
 
 void Integer_Del(Integer * p_A)
 {
-    p_A->sign = ZERO;
-    free(p_A->val);
-    p_A->val = NULL;
+    if (p_A)
+    {
+        p_A->sign = ZERO;
+        free(p_A->val);
+        p_A->val = NULL;
+    }
+    else
+    {
+        raise(ERROR, "Deletion Failed");
+    }
 }
