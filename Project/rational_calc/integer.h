@@ -3,7 +3,7 @@
 #define _INTEGER_H
 #include "numerical.h"
 
-typedef enum {ZERO, POSITIVE, NEGATIVE} Sign;   // 整数的符号
+typedef enum {ZERO = 0, POSITIVE = 1, NEGATIVE = -1} Sign;   // 整数的符号
 
 typedef struct integer Integer;
 struct integer
@@ -15,7 +15,7 @@ struct integer
 
     Sign sign;
     unsigned long size;     // 整数的长度
-    unsigned char * val;        // 整数的绝对值
+    unsigned char * val;        // 整数的绝对值, 具体实现中, 整数被倒序存放
 };
 
 // 整数的方法的实现函数原型

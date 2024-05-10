@@ -1,6 +1,5 @@
 #include "integer.h"
 #include <stdio.h>
-#include <stdlib.h>
 
 int main()
 {
@@ -14,10 +13,10 @@ int main()
     Get(&B);
     printf("A + B = ");
     Add(&A, &B, &C);
-    Print(&C);puts("");
+    Print(&C);
     Integer_Del(&A);
     Integer_Del(&B);
     Integer_Del(&C);
-    system("pause");
+    getchar();
     return 0;
 }

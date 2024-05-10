@@ -101,8 +101,72 @@ void IntAdd(Integer * p_A, Integer * p_B, Integer * p_C)
         else
             tmp = *p_B;
     }
-    else;
-    if (p_C->val)       // 把运算最终结果存入C中
+    else
+    {
+        if (p_A->sign + p_B->sign)     // 如果两个整数同号
+        {
+            tmp.sign = p_A->sign;
+            tmp.size = (p_A->size > p_B->size) ? p_A->size : p_B->size;
+            tmp.val = (unsigned char *) malloc(sizeof (unsigned char) * (tmp.size + 1));
+            for (int i = 0; i <= tmp.size; i++) tmp.val[i] = '0';
+            int cur = 0;
+            while (cur < p_A->size && cur < p_B->size)
+            {
+                tmp.val[cur] += p_A->val[cur] - '0' + p_B->val[cur] - '0';
+                while (tmp.val[cur] > '9')
+                {
+                    tmp.val[cur + 1] += 1;
+                    tmp.val[cur] -= 10;
+                }
+                cur++;
+            }
+            while (cur < p_A->size)
+            {
+                tmp.val[cur] += p_A->val[cur] - '0';
+                while (tmp.val[cur] > '9')
+                {
+                    tmp.val[cur + 1] += 1;
+                    tmp.val[cur] -= 10;
+                }
+                cur++;
+            }
+            while (cur < p_B->size)
+            {
+                tmp.val[cur] += p_B->val[cur] - '0';
+                while (tmp.val[cur] > '9')
+                {
+                    tmp.val[cur + 1] += 1;
+                    tmp.val[cur] -= 10;
+                }
+                cur++;
+            }
+            if (tmp.val[tmp.size] > '0')
+            {
+                tmp.size++;
+                unsigned char * save = (unsigned char *) malloc(sizeof (unsigned char) * tmp.size);
+                memcpy(save, tmp.val, sizeof (unsigned char) * tmp.size);
+                free(tmp.val);
+                tmp.val = (unsigned char *) malloc(sizeof (unsigned char) * (tmp.size + 1));
+                memcpy(tmp.val, save, sizeof (unsigned char) * tmp.size);
+                tmp.val[tmp.size] = '\0';
+            }
+            else;
+        }
+        else             // 两个整数异号
+        {
+            if (p_A->sign == POSITIVE)
+            {
+                Ops(p_B, &tmp);
+                Sub(p_A, &tmp, &tmp);
+            }
+            else
+            {
+                Ops(p_A, &tmp);
+                Sub(p_B, &tmp, &tmp);
+            }
+        }
+    }
+    if (p_C->size)       // 把运算最终结果存入C中
         free(p_C->val);
     else;
     p_C->val = (unsigned char *) malloc(sizeof (unsigned char) * (tmp.size + 1));
@@ -141,16 +205,30 @@ void IntAbs(Integer * p_A, Integer * p_C)
 
 void IntOps(Integer * p_A, Integer * p_C)
 {
-    ;
+    if (p_C->size)
+    {
+        raise(WARNING, "Override Existing");
+        free(p_C->val);
+    }else;
+    p_C->val = (unsigned char *) malloc(sizeof (unsigned char) * (p_A->size + 1));
+    memcpy(p_C, p_A, sizeof (*p_A));
+    switch (p_A->sign)
+    {
+        case POSITIVE : p_C->sign = NEGATIVE; break;
+        case NEGATIVE : p_C->sign = POSITIVE; break;
+        case ZERO : p_C->sign = ZERO;
+        default : break;
+    }
 }
 
 void GetInt(Integer * p_A)
 {
-    int isP = 0, index = 0;
     FILE * pf = fopen("history", "a+");
     char * buffer = (char *) malloc(sizeof (char));
     setvbuf(pf, buffer, _IONBF, 1);
-    char ch = getchar(); fputc(ch, pf);
+    char ch;
+    while ((ch = getchar()) == ' ' || ch == '\n' || ch == '\t'); 
+    fputc(ch, pf);
     if (ch == '-')
     {
         p_A->sign = NEGATIVE;
@@ -163,25 +241,36 @@ void GetInt(Integer * p_A)
         ch = getchar();
         fputc(ch, pf);
     }
+    int index = p_A->size - 1;
     p_A->val = (unsigned char *) malloc(sizeof (unsigned char) * (p_A->size + 1));
     fseek(pf, -p_A->size - 2, SEEK_CUR);
     ch = fgetc(pf);
     while ('0' <= ch && ch <= '9')
     {
-        if (!isP && ch != '0')
+        if (!p_A->sign && ch != '0')
             p_A->sign = POSITIVE;
         else;
-        p_A->val[index++] = ch;
+        p_A->val[index--] = ch;
         ch = fgetc(pf);
     }
-    p_A->val[index] = '\0';
+    p_A->val[p_A->size] = '\0';
     free(buffer);
     fclose(pf);
 }
 
 void PrintInt(Integer * p_A)
 {
-    printf("%s", p_A->val);
+    switch (p_A->sign)
+    {
+        case NEGATIVE : putchar('-');
+        case POSITIVE : int end;
+                        for (end = p_A->size - 1; end >= 0; end--)
+                            putchar(p_A->val[end]);
+                        break;
+        case ZERO : putchar('0');
+        default : break;
+    }
+    
 }
 
 void Integer_Init(Integer * p_A)
