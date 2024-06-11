@@ -1,6 +1,7 @@
 /* heap.c -- 堆的实现*/
 #include "heap.h"
-#define _SMALL_HEAP_
+#include <stdlib.h>
+
 #ifdef _SMALL_HEAP_
 void Heap_insert(Heap H, ElementType * e)
 {
@@ -21,7 +22,7 @@ ElementType * Heap_del(Heap H)
     static ElementType minElem, lastElem;
     if (!Heap_isEmpty(H))
     {
-        elem_copy(minElem, H->elems + 1);
+        elem_copy(&minElem, H->elems + 1);
         elem_copy(&lastElem, H->elems + H->size--);
         for (i = 1; i * 2 <= H->size; i = child)
         {
@@ -36,7 +37,7 @@ ElementType * Heap_del(Heap H)
             else
                 break;
         }
-        elem_copy(H->elems + i, lastElem);
+        elem_copy(H->elems + i, &lastElem);
         return &minElem;
     }
     else
@@ -77,7 +78,7 @@ ElementType * Heap_del(Heap H)
             else
                 break;
         }
-        elem_copy(H->elems + i, lastElem);
+        elem_copy(H->elems + i, &lastElem);
         return &maxElem;
     }
     else
@@ -87,6 +88,40 @@ ElementType * Heap_del(Heap H)
 #error KIND OF HEAP NOT DECIDED
 #endif
 #endif
+
+Heap Heap_init(int maxElements)
+{
+    Heap H;
+    if (maxElements > MIN_TREE_CAPATICITY)
+    {
+        H = (Heap) malloc(sizeof (heapStruct));
+        if (H)
+        {
+            H->elems = (ElementType *) malloc(sizeof (ElementType) * 
+                                                    (maxElements + 1));
+            H->capacity = maxElements;
+            H->size = 0;
+#ifdef _SMALL_HEAP_
+            elem_copy(H->elems, &ELEM_MIN);
+#else
+#ifdef _BIG_HEAP_
+            elem_copy(H->elems, &ELEM_MAX);
+#endif
+#endif
+        }
+    }
+    return H;
+}
+
+void Heap_free(Heap H)
+{
+    if (H)
+    {
+        for (int i = 0; i <= H->capacity; i++)
+            elem_free(H->elems + i);
+        free(H->elems);
+    }
+}
 
 ElementType * Heap_find(Heap H)
 {

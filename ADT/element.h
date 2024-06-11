@@ -5,7 +5,9 @@
 #include <memory.h>
 #include <stdio.h>
 
-typedef int ElementType;
+#ifndef ElementType
+#define ElementType int
+#endif
 
 // 设置初始值
 static inline int elem_init(ElementType * e)
@@ -15,18 +17,18 @@ static inline int elem_init(ElementType * e)
 }
 
 // 定义最大元素值
-const ElementType _elem_max_ = INT_MAX;
+static const ElementType _elem_max_ = INT_MAX;
 #define ELEM_MAX _elem_max_
 
 // 定义最小元素值
-const ElementType _elem_min_ = INT_MIN;
+static const ElementType _elem_min_ = 0;
 #define ELEM_MIN _elem_min_
 
 // 用于比较大小: LT -> Less Than, EQ -> Equal, GT -> Greater Than
 typedef enum {LT = -1, EQ = 0, GT = 1} Order;
 
 // 比较函数
-static inline Order elem_compare(ElementType * e1, ElementType * e2)
+static inline Order elem_compare(ElementType const * e1, ElementType const * e2)
 {
     Order ord;
     if (*e1 - *e2 < 0)
@@ -39,7 +41,7 @@ static inline Order elem_compare(ElementType * e1, ElementType * e2)
 }
 
 // 对元素的赋值函数
-static inline void * elem_copy(ElementType * e1, ElementType * e2)
+static inline void * elem_copy(ElementType * e1, ElementType const * e2)
 {
     return memcpy(e1, e2, sizeof (ElementType));
 }
@@ -51,7 +53,7 @@ static inline void elem_free(ElementType * e)
 }
 
 // 输出函数
-static inline int elem_show(ElementType * e)
+static inline int elem_show(ElementType const * e)
 {
     return printf("%d ", *e);
 }

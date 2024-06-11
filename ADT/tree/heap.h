@@ -1,31 +1,32 @@
 /* heap.h -- 堆ADT*/
 #ifndef HEAP_H_
 #define HEAP_H_
+#include "../element.h"
 
-#define _ARRAY_BIN_TREE_
-#include "bin_tree.h"
+#define MIN_TREE_CAPATICITY (0)
 
-typedef BinTree Heap;
+typedef struct heapStruct
+{
+    int capacity;    // 二叉树的最大结点数
+    int size;        // 当前整个二叉树的大小
+    ElementType * elems; // 元素数组
+} heapStruct;
 
-// 决定使用小顶堆还是大顶堆
-// #define _SMALL_HEAP_
-// #define _BIG_HEAP_
+typedef heapStruct * Heap;
+
+// 决定使用小顶堆还是大顶堆, 默认小顶堆
+#ifndef _SMALL_HEAP_
+#define _SMALL_HEAP_
+#endif
+#ifdef _BIG_HEAP_
+#undef _SMALL_HEAP_
+#endif
 
 // 初始化堆
-static inline Heap Heap_init(int maxElements)
-{
-    Heap H;
-    H = (Heap) BinTree_init(maxElements);
-#ifdef _BIG_HEAP_
-    elem_copy(H->elems, &ELEM_MAX);
-#endif
-}
+Heap Heap_init(int maxElements);
 
 // 删除堆
-static inline void Heap_free(Heap H)
-{
-    return BinTree_free(H);
-}
+void Heap_free(Heap H);
 
 // 判断堆是否已满
 static inline int Heap_isFull(Heap H)

@@ -6,6 +6,7 @@
 void selection_sort(int ar[], int size);    /*选择排序*/
 void direct_insert_sort(int ar[], int size);    /*直接插入排序*/
 void bubble_sort(int ar[], int size);   /*冒泡排序*/
+void heap_sort(int ar[], int size);    /*堆排序*/
 void merge_sort(int ar[], int copy[], int start, int end);  /*归并排序*/
 void quick_sort(int ar[], int start, int end); /*快速排序*/
 
@@ -21,7 +22,8 @@ int main()
     //selection_sort(array, n_input);
     //direct_insert_sort(array, n_input);
     //bubble_sort(array, n_input);
-    merge_sort(array, array_copy, 0, n_input - 1);
+    heap_sort(array, n_input);
+    // merge_sort(array, array_copy, 0, n_input - 1);
     //quick_sort(array, 0, n_input - 1);
 
     for (int i = 0; i < n_input; i++)   /*输出结果*/
@@ -72,6 +74,18 @@ void bubble_sort(int ar[], int size)
             {
                 temp = ar[j];ar[j] = ar[j + 1]; ar[j + 1] = temp;
             }
+}
+
+#define ElementType int
+#include "../ADT/tree/heap.h"
+void heap_sort(int ar[], int size)
+{
+    Heap H = Heap_init(size);
+    for (int i = 0; i < size; i++)
+        Heap_insert(H, ar+i);
+    for (int i = 0; i < size; i++)
+        elem_copy(ar + i, Heap_del(H));
+    Heap_free(H);
 }
 
 void merge_sort(int ar[], int copy[], int start, int end)
