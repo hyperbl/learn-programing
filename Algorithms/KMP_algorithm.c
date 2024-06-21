@@ -61,18 +61,14 @@ int * get_next(char pat[])
 {
     int i = 0, j = -1, len = strlen(pat);
     int * next = (int *) malloc(len * sizeof (int));
-    if (len)
-        next[i] = j;
-    else;
+    next[i] = j;
     while (i < len)
     {
         if (j == -1 || pat[i] == pat[j])
         {
             i++; j++;
             if (pat[i] != pat[j])
-            {
                 next[i] = j;
-            }
             else
                 next[i] = next[j];
         }
