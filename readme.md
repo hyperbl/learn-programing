@@ -5,3 +5,7 @@
 *Also a trial to use git & github.*  
 
 Probably there would be a lot of bugs in my files. However, they have witnessed my learning process. 
+
+---
+
+Now this repository is read-only.
